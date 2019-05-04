@@ -76,12 +76,14 @@ colorTag = 0
 steps = []
 stepper = []
 stop = 0  # 0时为可以走棋，1 为已不能走棋。
+j_list = []  # 保存走的步数
 
 
 def moveChess(event):
     global mapper, stop
     """
     Call to move chess, 通过事件绑定，点击坐标下子。
+
     """
     x = event.x // 30
     y = event.y // 30
@@ -106,6 +108,7 @@ def moveChess(event):
             while i < len(map):
                 if map[i] == [x, y]:
                     map[i] = colorTag
+                    j_list.append(i)
                 i += 1
             mapper = map.copy()
             print(map)
@@ -141,8 +144,50 @@ def drawMap():
             print()
 
 
+def back(event):
+    global map, stop
+    """
+    call for back, 用于悔棋
+
+    """
+    if len(steps) == 0 or len(stepper) == 0:
+        showwarning('提示', '棋盘上已经没有棋子了!')
+    else:
+        backing = steps.pop()
+        stepper.pop()
+        id = backing[0]
+        x = backing[1]
+        y = backing[2]
+        j = j_list.pop()
+        cv.delete(id)
+        map[j] = [x, y]
+        stop = 0
+        colorTurn()
+
+
+def restart(event):
+    global map, stop
+    """
+    call to restar game. 开始新游戏
+
+    """
+    map = []
+    for i in range(1, 17):
+        for j in range(2, 18):
+            map.append([i, j])
+
+    for step in steps:
+        id = step[0]
+        cv.delete(id)
+    steps.clear()
+    stepper.clear()
+    j_list.clear()
+    stop = 0
+    colorTurn()
+
+
 cv.bind('<Button - 1>', moveChess)
+cv.bind('<Button - 2>', restart)
+cv.bind('<Button - 3>', back)
 cv.pack()
 tk.mainloop()
-
-
