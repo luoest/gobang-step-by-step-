@@ -30,8 +30,10 @@ def moveChess(event):
     """
     x = event.x // 30
     y = event.y // 30
+    # cannot put chesses outside board. 超过棋盘不能落子
     if [x, y] not in map:
         winsound.Beep(500, 100)
+    # cannot put chesses where there is one. 有棋子出不能落子
     elif [x, y] in stepper:
         winsound.Beep(500, 100)
     else:
@@ -66,6 +68,10 @@ def colorTurn():
         colorTag = 0
 
 def drawMap():
+    """
+    draw board map and show chess's posision
+    画出棋盘，实时显示棋子位置
+    """
     count = 0
     for i in range(len(mapper)):
         if mapper[i] != 0 and mapper[i] != 1:
